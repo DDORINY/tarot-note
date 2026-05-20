@@ -45,9 +45,33 @@ export function ReadingResult({ result }: { result: ReadingResultType }) {
 
           <div className="space-y-3">
             <h3 className="text-xl font-semibold text-softGold">카드가 이어지는 장면</h3>
-            <div className="grid gap-4">
-              {result.story.cardNarratives.map((card) => (
-                <Card key={`${card.positionIndex}-${card.cardName}`} className="space-y-3">
+          <div className="grid gap-4">
+              {result.story.cardNarratives.map((card) => {
+                const matchingCard = result.cards.find((item) => item.positionIndex === card.positionIndex && item.cardName === card.cardName);
+
+                return (
+                <Card key={`${card.positionIndex}-${card.cardName}`} className="grid gap-4 sm:grid-cols-[88px_1fr]">
+                  {matchingCard && (
+                    <div className="flex justify-center sm:justify-start">
+                      <TarotCard
+                        card={{
+                          id: matchingCard.cardId,
+                          nameKo: matchingCard.cardName,
+                          nameEn: matchingCard.cardNameEn ?? matchingCard.cardId,
+                          arcana: "major",
+                          suit: null,
+                          number: null,
+                          uprightMeaning: "",
+                          reversedMeaning: "",
+                          keywords: matchingCard.keywords ?? [],
+                          imageUrl: matchingCard.imageUrl ?? matchingCard.image_url ?? null
+                        }}
+                        orientation={matchingCard.orientation}
+                        flipped
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-gold/15 px-3 py-1 text-xs font-semibold text-softGold">
                       {card.positionIndex}. {card.positionLabel}
@@ -59,8 +83,10 @@ export function ReadingResult({ result }: { result: ReadingResultType }) {
                   <p className="text-sm leading-7 text-mist">{card.scene}</p>
                   <p className="text-sm leading-7 text-mist">{card.interpretation}</p>
                   {card.connectionToNext && <p className="text-sm leading-7 text-gold">{card.connectionToNext}</p>}
+                  </div>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -106,7 +132,7 @@ export function ReadingResult({ result }: { result: ReadingResultType }) {
                     uprightMeaning: "",
                     reversedMeaning: "",
                     keywords: card.keywords ?? [],
-                    imageUrl: null
+                    imageUrl: card.imageUrl ?? card.image_url ?? null
                   }}
                   orientation={card.orientation}
                   flipped

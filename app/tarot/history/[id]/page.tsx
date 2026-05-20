@@ -23,6 +23,7 @@ type DbReadingCard = {
     name_ko: string;
     name_en: string;
     keywords: string[];
+    image_url: string | null;
   } | null;
 };
 
@@ -77,9 +78,9 @@ function dbReadingToDetail(reading: DbReading): Extract<DetailState, { status: "
     cardNameEn: card.tarot_cards?.name_en,
     orientation: card.orientation,
     interpretation: card.interpretation,
-    keywords: card.tarot_cards?.keywords ?? []
+    keywords: card.tarot_cards?.keywords ?? [],
+    imageUrl: card.tarot_cards?.image_url ?? null
   }));
-
   const advice = reading.advice;
 
   return {
@@ -114,13 +115,15 @@ function dbReadingToDetail(reading: DbReading): Extract<DetailState, { status: "
 }
 
 function guestReadingToDetail(reading: GuestReading): Extract<DetailState, { status: "ready" }> {
+  const spreadName = reading.spreadName ?? "게스트 리딩";
+
   return {
     status: "ready",
     source: "guest",
     id: reading.id,
     question: reading.question,
     category: reading.category,
-    spreadName: reading.spreadName ?? "게스트 리딩",
+    spreadName,
     createdAt: reading.createdAt,
     diary: reading.diary,
     result: reading.story
@@ -130,7 +133,7 @@ function guestReadingToDetail(reading: GuestReading): Extract<DetailState, { sta
           story: buildStoryReading({
             question: reading.question,
             category: reading.category,
-            spreadName: reading.spreadName ?? "게스트 리딩",
+            spreadName,
             cards: reading.cards,
             advice: reading.advice,
             summary: reading.summary

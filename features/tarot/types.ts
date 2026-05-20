@@ -31,6 +31,7 @@ export type TarotCard = {
   reversedMeaning: string;
   keywords: string[];
   imageUrl: string | null;
+  image_url?: string | null;
 };
 
 export type DrawnCard = {
@@ -56,6 +57,8 @@ export type CardInterpretation = {
   orientation: TarotOrientation;
   interpretation: string;
   keywords?: string[];
+  imageUrl?: string | null;
+  image_url?: string | null;
 };
 
 export type CardNarrative = {
