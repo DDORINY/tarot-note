@@ -58,6 +58,28 @@ export type CardInterpretation = {
   keywords?: string[];
 };
 
+export type CardNarrative = {
+  positionIndex: number;
+  positionLabel: string;
+  cardName: string;
+  orientation: TarotOrientation;
+  scene: string;
+  interpretation: string;
+  connectionToNext?: string;
+};
+
+export type StoryReading = {
+  title: string;
+  opening: string;
+  storyFlow: string;
+  emotionalInsight: string;
+  cardNarratives: CardNarrative[];
+  turningPoint: string;
+  possibleOutcome: string;
+  advice: string;
+  closingMessage: string;
+};
+
 export type ReadingResult = {
   summary: string;
   keyMessage: string;
@@ -68,6 +90,7 @@ export type ReadingResult = {
   caution: string;
   oneLine: string;
   cards: CardInterpretation[];
+  story?: StoryReading;
 };
 
 export type DiaryNote = {

@@ -8,6 +8,7 @@ import { Loading } from "@/components/common/Loading";
 import { ReadingResult } from "@/components/tarot/ReadingResult";
 import { getGuestReadingById, type GuestReading } from "@/features/tarot/reading-utils";
 import type { ReadingResult as ReadingResultType, TarotOrientation } from "@/features/tarot/types";
+import { buildStoryReading } from "@/lib/reading-engine";
 import { routes } from "@/lib/routes";
 
 type DbReadingCard = {
@@ -66,6 +67,20 @@ function latestDiary(entries?: DbDiary[]) {
 function dbReadingToDetail(reading: DbReading): Extract<DetailState, { status: "ready" }> {
   const cards = [...(reading.reading_cards ?? [])].sort((a, b) => a.position_index - b.position_index);
   const diary = latestDiary(reading.diary_entries);
+  const spreadName = reading.spreads?.name ?? reading.spread_id ?? "저장된 스프레드";
+  const resultCards = cards.map((card) => ({
+    positionIndex: card.position_index,
+    positionLabel: card.position_label,
+    positionMeaning: card.position_meaning,
+    cardId: card.card_id,
+    cardName: card.tarot_cards?.name_ko ?? card.card_id,
+    cardNameEn: card.tarot_cards?.name_en,
+    orientation: card.orientation,
+    interpretation: card.interpretation,
+    keywords: card.tarot_cards?.keywords ?? []
+  }));
+
+  const advice = reading.advice;
 
   return {
     status: "ready",
@@ -73,7 +88,7 @@ function dbReadingToDetail(reading: DbReading): Extract<DetailState, { status: "
     id: reading.id,
     question: reading.question,
     category: reading.category,
-    spreadName: reading.spreads?.name ?? reading.spread_id ?? "저장된 스프레드",
+    spreadName,
     createdAt: reading.created_at,
     diary: diary ? { emotion: diary.emotion, note: diary.note } : undefined,
     result: {
@@ -82,20 +97,18 @@ function dbReadingToDetail(reading: DbReading): Extract<DetailState, { status: "
       connection: "상세 기록에서는 각 카드가 놓인 위치와 해석을 이어 읽으며 당시의 고민 흐름을 복기할 수 있습니다.",
       current: "현재 상황은 카드별 해석과 위치 의미를 함께 보며 다시 정리할 수 있습니다.",
       flow: "앞으로의 가능성은 고정된 결론보다 당시 조언을 어떻게 실천했는지에 따라 달라질 수 있습니다.",
-      advice: reading.advice,
+      advice,
       caution: "",
-      oneLine: reading.advice,
-      cards: cards.map((card) => ({
-        positionIndex: card.position_index,
-        positionLabel: card.position_label,
-        positionMeaning: card.position_meaning,
-        cardId: card.card_id,
-        cardName: card.tarot_cards?.name_ko ?? card.card_id,
-        cardNameEn: card.tarot_cards?.name_en,
-        orientation: card.orientation,
-        interpretation: card.interpretation,
-        keywords: card.tarot_cards?.keywords ?? []
-      }))
+      oneLine: advice,
+      cards: resultCards,
+      story: buildStoryReading({
+        question: reading.question,
+        category: reading.category,
+        spreadName,
+        cards: resultCards,
+        advice,
+        summary: reading.result_summary
+      })
     }
   };
 }
@@ -110,7 +123,19 @@ function guestReadingToDetail(reading: GuestReading): Extract<DetailState, { sta
     spreadName: reading.spreadName ?? "게스트 리딩",
     createdAt: reading.createdAt,
     diary: reading.diary,
-    result: reading
+    result: reading.story
+      ? reading
+      : {
+          ...reading,
+          story: buildStoryReading({
+            question: reading.question,
+            category: reading.category,
+            spreadName: reading.spreadName ?? "게스트 리딩",
+            cards: reading.cards,
+            advice: reading.advice,
+            summary: reading.summary
+          })
+        }
   };
 }
 

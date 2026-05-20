@@ -19,21 +19,40 @@ body {
 }
 
 .tarot-card-3d {
+  position: relative;
   transform-style: preserve-3d;
-  transition: transform 720ms cubic-bezier(0.2, 0.72, 0.18, 1);
-}
-
-.tarot-card-3d.is-flipped {
-  transform: rotateY(180deg);
 }
 
 .tarot-card-face {
+  position: absolute;
+  inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transition:
+    opacity 220ms ease,
+    transform 720ms cubic-bezier(0.2, 0.72, 0.18, 1);
+  will-change: opacity, transform;
+}
+
+.tarot-card-back {
+  opacity: 1;
+  transform: rotateY(0deg);
 }
 
 .tarot-card-front {
+  opacity: 0;
   transform: rotateY(180deg);
+}
+
+.tarot-card-3d.is-flipped .tarot-card-back {
+  opacity: 0;
+  transform: rotateY(-180deg);
+}
+
+.tarot-card-3d.is-flipped .tarot-card-front {
+  opacity: 1;
+  transform: rotateY(0deg);
+  z-index: 2;
 }
 
 .perspective-1000 {
