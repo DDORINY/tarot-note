@@ -60,6 +60,7 @@ function createCardInterpretations(input: ReadingRequest): CardInterpretation[] 
       cardNameEn: card.nameEn,
       orientation,
       keywords: card.keywords,
+      imageUrl: card.imageUrl ?? card.image_url ?? null,
       interpretation: `${position.label} 위치의 ${card.nameKo}(${tone}) 카드는 ${position.meaning} 안에서 "${cardMeaning}"의 흐름을 보여줍니다. 이 카드는 결론을 단정하기보다 지금 질문에서 무엇이 움직이고, 무엇이 아직 멈춰 있는지 차분히 구분하라고 말합니다.`
     };
   });

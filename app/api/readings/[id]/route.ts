@@ -13,7 +13,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
   const { data, error } = await supabase
     .from("readings")
-    .select("*, spreads(name), reading_cards(*, tarot_cards(name_ko, name_en, keywords)), diary_entries(*)")
+    .select("*, spreads(name), reading_cards(*, tarot_cards(name_ko, name_en, keywords, image_url)), diary_entries(*)")
     .eq("id", params.id)
     .eq("user_id", user.id)
     .single();
