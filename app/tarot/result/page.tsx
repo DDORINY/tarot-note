@@ -18,6 +18,7 @@ export default function ResultPage() {
   const [emotion, setEmotion] = useState("");
   const [note, setNote] = useState("");
   const [diaryMessage, setDiaryMessage] = useState("");
+  const [isSavingDiary, setIsSavingDiary] = useState(false);
 
   useEffect(() => {
     const spread = JSON.parse(window.sessionStorage.getItem("tarot-note:selected-spread") ?? "null") as TarotSpread | null;
@@ -55,6 +56,7 @@ export default function ResultPage() {
           if (id) setGuestReadingId(id);
           return;
         }
+
         response.json().then((data: { id?: string }) => {
           if (data.id) setReadingId(data.id);
         });
@@ -79,23 +81,31 @@ export default function ResultPage() {
       return;
     }
 
-    if (readingId) {
-      const response = await fetch("/api/diary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ readingId, emotion, note })
-      });
-      setDiaryMessage(response.ok ? "감정 메모가 저장되었습니다." : "리딩은 저장됐지만 감정 메모 저장은 실패했습니다.");
-      return;
-    }
+    setIsSavingDiary(true);
 
-    if (guestReadingId) {
-      updateGuestReadingDiary(guestReadingId, { emotion, note });
-      setDiaryMessage("이 브라우저에 감정 메모가 저장되었습니다.");
-      return;
-    }
+    try {
+      if (readingId) {
+        const response = await fetch("/api/diary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ readingId, emotion, note })
+        });
+        setDiaryMessage(response.ok ? "감정 태그와 메모를 저장했습니다." : "리딩은 저장됐지만 감정 메모 저장은 실패했습니다.");
+        return;
+      }
 
-    setDiaryMessage("리딩 저장이 끝난 뒤 다시 시도해주세요.");
+      if (guestReadingId) {
+        const updated = updateGuestReadingDiary(guestReadingId, { emotion, note: note.trim() });
+        setDiaryMessage(updated ? "이 브라우저에 감정 태그와 메모를 저장했습니다." : "리딩 기록을 찾지 못해 감정 메모를 저장하지 못했습니다.");
+        return;
+      }
+
+      setDiaryMessage("리딩 저장이 끝난 뒤 다시 시도해주세요.");
+    } catch {
+      setDiaryMessage("리딩은 유지됐지만 감정 메모 저장은 실패했습니다.");
+    } finally {
+      setIsSavingDiary(false);
+    }
   }
 
   if (!result) return <Loading />;
@@ -111,10 +121,12 @@ export default function ResultPage() {
           새 리딩 시작
         </Button>
       </div>
+
       <ReadingResult result={result} />
+
       <Card>
         <h2 className="text-lg font-semibold text-softGold">감정 태그와 메모</h2>
-        <p className="mt-2 text-sm text-mist">선택 입력입니다. 리딩을 보고 난 지금의 감정과 짧은 기록을 남겨보세요.</p>
+        <p className="mt-2 text-sm text-mist">선택 입력입니다. 리딩을 보고 난 지금의 감정과 기억해둘 문장을 남겨보세요.</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {EMOTION_TAGS.map((tag) => (
             <button
@@ -133,11 +145,13 @@ export default function ResultPage() {
           className="mt-4 min-h-28 w-full rounded-md border border-white/10 bg-black/25 p-4 text-sm text-mist outline-none focus:border-gold"
           maxLength={500}
           onChange={(event) => setNote(event.target.value)}
-          placeholder="예: 불안했지만 조언 카드를 보고 오늘 연락보다 내 마음을 먼저 정리해보기로 했다."
+          placeholder="예: 아직 불안하지만 조언 카드를 보고 오늘은 연락보다 내 마음을 먼저 정리해보기로 했다."
           value={note}
         />
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Button onClick={saveDiary}>감정 메모 저장</Button>
+          <Button disabled={isSavingDiary} onClick={saveDiary}>
+            감정 메모 저장
+          </Button>
           {diaryMessage && <p className="text-sm text-gold">{diaryMessage}</p>}
         </div>
       </Card>

@@ -33,7 +33,7 @@ export default function HistoryPage() {
       <div>
         <p className="text-sm text-gold">History</p>
         <h1 className="mt-2 text-3xl font-semibold text-softGold">내 리딩 기록</h1>
-        <p className="mt-3 text-mist">비로그인 리딩은 현재 브라우저 localStorage에 임시 저장됩니다.</p>
+        <p className="mt-3 text-mist">비로그인 리딩은 현재 브라우저의 localStorage에 임시 저장됩니다.</p>
       </div>
       <div className="grid gap-4">
         {dbReadings.length === 0 && guestReadings.length === 0 && <Card>아직 저장된 리딩이 없습니다.</Card>}

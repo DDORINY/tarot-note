@@ -11,9 +11,9 @@ export const READING_CATEGORIES = [
 
 export type ReadingCategory = (typeof READING_CATEGORIES)[number];
 
-export const FREE_SPREAD_IDS = ["three-card", "four-card"];
+export const FREE_SPREAD_IDS = ["three-card", "four-card"] as const;
 
-export const ENABLE_PREMIUM_BYPASS = false;
+export const ENABLE_PREMIUM_BYPASS = true;
 
 export const EMOTION_TAGS = ["불안", "기대", "혼란", "설렘", "후회", "확신", "답답함", "평온함"] as const;
 

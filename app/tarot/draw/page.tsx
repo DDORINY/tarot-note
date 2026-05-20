@@ -44,6 +44,7 @@ export default function DrawPage() {
         <div>
           <p className="text-sm text-gold">{spread.name}</p>
           <h1 className="mt-2 text-3xl font-semibold text-softGold">카드를 선택하세요</h1>
+          <p className="mt-2 text-sm text-mist">클릭 전에는 뒷면만 보이며, 한 번 뒤집힌 카드는 다시 바뀌지 않습니다.</p>
         </div>
         <SpreadBoard spread={spread} drawnCards={drawnCards} revealedIndexes={revealed} onReveal={reveal} />
         <Button className="w-full" disabled={!allRevealed} onClick={finish}>

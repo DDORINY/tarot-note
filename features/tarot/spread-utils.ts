@@ -6,5 +6,5 @@ export function getSpreadById(spreadId: string) {
 }
 
 export function isFreeSpread(spreadId: string) {
-  return FREE_SPREAD_IDS.includes(spreadId);
+  return (FREE_SPREAD_IDS as readonly string[]).includes(spreadId);
 }

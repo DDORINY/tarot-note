@@ -13,7 +13,7 @@ export function QuestionForm() {
 
   function submit() {
     if (!question.trim()) return;
-    window.sessionStorage.setItem("tarot-note:question", JSON.stringify({ category, question }));
+    window.sessionStorage.setItem("tarot-note:question", JSON.stringify({ category, question: question.trim() }));
     router.push(routes.draw);
   }
 
