@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { majorArcanaCards } from "@/data/mock-cards";
+import { tarotCards } from "@/data/mock-cards";
 import { createSupabaseServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -7,11 +7,11 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const supabase = createSupabaseServiceClient();
 
-  if (!supabase) return NextResponse.json(majorArcanaCards);
+  if (!supabase) return NextResponse.json(tarotCards);
 
   const { data, error } = await supabase.from("tarot_cards").select("*").order("number");
 
-  if (error || !data) return NextResponse.json(majorArcanaCards);
+  if (error || !data) return NextResponse.json(tarotCards);
 
   return NextResponse.json(
     data.map((card) => ({

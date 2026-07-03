@@ -1,4 +1,6 @@
 export type TarotOrientation = "upright" | "reversed";
+export type TarotArcana = "major" | "minor";
+export type TarotSuit = "wands" | "cups" | "swords" | "pentacles";
 
 export type SpreadPosition = {
   index: number;
@@ -24,8 +26,8 @@ export type TarotCard = {
   id: string;
   nameKo: string;
   nameEn: string;
-  arcana: string;
-  suit: string | null;
+  arcana: TarotArcana;
+  suit: TarotSuit | null;
   number: number | null;
   uprightMeaning: string;
   reversedMeaning: string;
@@ -54,11 +56,16 @@ export type CardInterpretation = {
   cardId: string;
   cardName: string;
   cardNameEn?: string;
+  arcana?: TarotArcana;
+  suit?: TarotSuit | null;
+  number?: number | null;
   orientation: TarotOrientation;
   interpretation: string;
   keywords?: string[];
   imageUrl?: string | null;
   image_url?: string | null;
+  uprightMeaning?: string;
+  reversedMeaning?: string;
 };
 
 export type CardNarrative = {
@@ -71,16 +78,37 @@ export type CardNarrative = {
   connectionToNext?: string;
 };
 
+export type QuestionTopic = "relationship" | "career" | "money" | "self" | "choice" | "general";
+
+export type ReadingPositionNarrative = {
+  positionId: string;
+  positionName: string;
+  cardId: string;
+  cardNameKo: string;
+  cardNameEn: string;
+  orientation: TarotOrientation;
+  headline: string;
+  narrative: string;
+  transitionToNext?: string;
+};
+
 export type StoryReading = {
   title: string;
-  opening: string;
-  storyFlow: string;
-  emotionalInsight: string;
-  cardNarratives: CardNarrative[];
-  turningPoint: string;
-  possibleOutcome: string;
+  oneLineSummary: string;
+  overallTheme: string;
+  emotionalFlow: string;
+  positionNarratives: ReadingPositionNarrative[];
+  connectionNarrative: string;
   advice: string;
-  closingMessage: string;
+  caution: string;
+  closing: string;
+  opening?: string;
+  storyFlow?: string;
+  emotionalInsight?: string;
+  cardNarratives?: CardNarrative[];
+  turningPoint?: string;
+  possibleOutcome?: string;
+  closingMessage?: string;
 };
 
 export type ReadingResult = {

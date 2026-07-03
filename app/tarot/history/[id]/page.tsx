@@ -7,7 +7,7 @@ import { Card } from "@/components/common/Card";
 import { Loading } from "@/components/common/Loading";
 import { ReadingResult } from "@/components/tarot/ReadingResult";
 import { getGuestReadingById, type GuestReading } from "@/features/tarot/reading-utils";
-import type { ReadingResult as ReadingResultType, TarotOrientation } from "@/features/tarot/types";
+import type { ReadingResult as ReadingResultType, TarotArcana, TarotOrientation, TarotSuit } from "@/features/tarot/types";
 import { buildStoryReading } from "@/lib/reading-engine";
 import { routes } from "@/lib/routes";
 
@@ -22,6 +22,11 @@ type DbReadingCard = {
   tarot_cards?: {
     name_ko: string;
     name_en: string;
+    arcana?: TarotArcana;
+    suit?: TarotSuit | null;
+    number?: number | null;
+    upright_meaning?: string;
+    reversed_meaning?: string;
     keywords: string[];
     image_url: string | null;
   } | null;
@@ -76,10 +81,15 @@ function dbReadingToDetail(reading: DbReading): Extract<DetailState, { status: "
     cardId: card.card_id,
     cardName: card.tarot_cards?.name_ko ?? card.card_id,
     cardNameEn: card.tarot_cards?.name_en,
+    arcana: card.tarot_cards?.arcana,
+    suit: card.tarot_cards?.suit,
+    number: card.tarot_cards?.number,
     orientation: card.orientation,
     interpretation: card.interpretation,
     keywords: card.tarot_cards?.keywords ?? [],
-    imageUrl: card.tarot_cards?.image_url ?? null
+    imageUrl: card.tarot_cards?.image_url ?? null,
+    uprightMeaning: card.tarot_cards?.upright_meaning,
+    reversedMeaning: card.tarot_cards?.reversed_meaning
   }));
   const advice = reading.advice;
 

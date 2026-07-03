@@ -22,7 +22,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("readings")
-    .select("*, spreads(name), reading_cards(*, tarot_cards(name_ko, name_en, keywords, image_url)), diary_entries(*)")
+    .select("*, spreads(name), reading_cards(*, tarot_cards(name_ko, name_en, arcana, suit, number, upright_meaning, reversed_meaning, keywords, image_url)), diary_entries(*)")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 

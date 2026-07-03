@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { LogOut, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { BrandImage } from "@/components/brand/BrandImage";
 import { Button } from "@/components/common/Button";
 import { signOut } from "@/features/auth/api";
 import { useAuthUser } from "@/features/auth/store";
@@ -33,9 +34,18 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-night/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href={routes.home} className="flex items-center gap-2 font-semibold text-softGold">
-          <Sparkles size={19} />
-          tarot-note
+        <Link href={routes.home} className="flex min-w-0 items-center gap-2 font-semibold text-softGold">
+          <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-md border border-gold/30 bg-white/5">
+            <BrandImage
+              alt="Tarot Note"
+              className="size-9 object-cover"
+              fallback={<Sparkles size={19} />}
+              height={36}
+              src="/images/brand/tarot-note-symbol.png"
+              width={36}
+            />
+          </span>
+          <span className="truncate">Tarot Note</span>
         </Link>
         <nav className="flex items-center gap-2 text-sm">
           <Link className="hidden text-mist hover:text-softGold sm:inline" href={routes.history}>
